@@ -30,7 +30,7 @@ router.post('/login', redirectIfLoggedIn, (req, res) => {
   const { email, password } = req.body;
   const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get((email || '').toLowerCase().trim());
 
-  if (!admin || !bcrypt.compareSync(password || '', admin.password_hash)) {
+  if (!admin || !bcrypt.compareSync((password || '').trim(), admin.password_hash)) {
     return res.status(401).render('admin/login', {
       pageTitle: `Admin Login — ${SITE_NAME}`,
       error: 'Incorrect email or password.',
