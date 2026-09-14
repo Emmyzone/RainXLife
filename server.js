@@ -10,6 +10,7 @@ const publicRoutes = require('./src/routes/public');
 const adminRoutes = require('./src/routes/admin');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 const SITE_NAME = process.env.SITE_NAME || 'RainXLife';
 const SITE_URL = process.env.SITE_URL || `http://localhost:${PORT}`;
