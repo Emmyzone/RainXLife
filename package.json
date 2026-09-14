@@ -1,7 +1,7 @@
 {
   "name": "rainxlife",
   "version": "1.0.0",
-"type": "module"
+"type": "module",
   "description": "RainXLife - Ideas from books. Lessons for life. A book-summary and personal-growth publication.",
   "main": "server.js",
   "scripts": {
