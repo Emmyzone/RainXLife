@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+
+<section class="container page-heading">
+  <h1>Search</h1>
+  <% if (query) { %>
+    <p class="hero-sub"><%= results.length %> result<%= results.length === 1 ? '' : 's' %> for "<%= query %>"</p>
+  <% } else { %>
+    <p class="hero-sub">Search by book title, author, category, or keyword.</p>
+  <% } %>
+</section>
+
+<section class="container">
+  <% if (query && results.length === 0) { %>
+    <p class="empty-state">No summaries matched "<%= query %>" yet. Try a different title, author, or topic.</p>
+  <% } else if (results.length > 0) { %>
+    <div class="article-grid">
+      <% results.forEach(item => { %>
+        <%- include('partials/article-card', { item }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle %></title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body login-body">
+  <div class="login-card">
+    <a href="/" class="logo">RainX<span class="logo-accent">Life</span></a>
+    <h1>Admin Login</h1>
+    <% if (error) { %><p class="form-error"><%= error %></p><% } %>
+    <form action="/admin/login" method="POST">
+      <label>Email
+        <input type="email" name="email" required autofocus>
+      </label>
+      <label>Password
+        <input type="password" name="password" required>
+      </label>
+      <button type="submit" class="btn-primary full-width">Log In</button>
+    </form>
+  </div>
+</body>
+</html>

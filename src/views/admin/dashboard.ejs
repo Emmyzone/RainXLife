@@ -1,0 +1,45 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-page-head">
+  <h1>Dashboard</h1>
+  <a href="/admin/articles/new" class="btn-primary">+ New Article</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <span class="stat-number"><%= stats.total %></span>
+    <span class="stat-label">Total Articles</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number"><%= stats.published %></span>
+    <span class="stat-label">Published</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number"><%= stats.drafts %></span>
+    <span class="stat-label">Drafts</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-number"><%= stats.totalViews %></span>
+    <span class="stat-label">Total Views</span>
+  </div>
+</div>
+
+<h2 class="section-label">Popular Articles</h2>
+<% if (stats.popular.length === 0) { %>
+  <p class="empty-state">No articles yet — create your first one.</p>
+<% } else { %>
+  <table class="admin-table">
+    <thead><tr><th>Title</th><th>Views</th><th>Status</th></tr></thead>
+    <tbody>
+      <% stats.popular.forEach(a => { %>
+        <tr>
+          <td><a href="/admin/articles/<%= a.id %>/edit"><%= a.title %></a></td>
+          <td><%= a.views %></td>
+          <td><span class="status-badge <%= a.published ? 'status-published' : 'status-draft' %>"><%= a.published ? 'Published' : 'Draft' %></span></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/admin-footer') %>

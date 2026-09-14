@@ -1,0 +1,36 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-page-head">
+  <h1>Articles</h1>
+  <a href="/admin/articles/new" class="btn-primary">+ New Article</a>
+</div>
+
+<% if (articles.length === 0) { %>
+  <p class="empty-state">No articles yet. Click "New Article" to publish your first summary.</p>
+<% } else { %>
+  <table class="admin-table">
+    <thead>
+      <tr><th>Title</th><th>Book</th><th>Category</th><th>Status</th><th>Views</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% articles.forEach(a => { %>
+        <tr>
+          <td><%= a.title %></td>
+          <td><%= a.book_title %></td>
+          <td><%= a.category_name || '—' %></td>
+          <td><span class="status-badge <%= a.published ? 'status-published' : 'status-draft' %>"><%= a.published ? 'Published' : 'Draft' %></span><% if (a.featured) { %> <span class="status-badge status-featured">Featured</span><% } %></td>
+          <td><%= a.views %></td>
+          <td class="admin-table-actions">
+            <a href="/admin/articles/<%= a.id %>/edit">Edit</a>
+            <% if (a.published) { %><a href="/books/<%= a.slug %>" target="_blank" rel="noopener">View</a><% } %>
+            <form action="/admin/articles/<%= a.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Delete this article? This cannot be undone.');">
+              <button type="submit" class="link-button danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/admin-footer') %>

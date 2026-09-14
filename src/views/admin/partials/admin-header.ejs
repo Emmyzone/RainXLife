@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle %></title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <a href="/admin" class="logo">RainX<span class="logo-accent">Life</span> <span class="admin-badge">Admin</span></a>
+      <nav class="admin-nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/" target="_blank" rel="noopener">View Site</a>
+        <form action="/admin/logout" method="POST" class="inline-form">
+          <button type="submit" class="link-button">Log Out</button>
+        </form>
+      </nav>
+    </header>
+    <main class="admin-main">

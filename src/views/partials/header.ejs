@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= pageTitle %></title>
+  <% if (typeof metaDescription !== 'undefined') { %>
+    <meta name="description" content="<%= metaDescription %>">
+  <% } %>
+  <% if (typeof canonicalUrl !== 'undefined') { %>
+    <link rel="canonical" href="<%= canonicalUrl %>">
+  <% } %>
+  <meta property="og:site_name" content="<%= siteName %>">
+  <meta property="og:title" content="<%= pageTitle %>">
+  <% if (typeof metaDescription !== 'undefined') { %>
+    <meta property="og:description" content="<%= metaDescription %>">
+  <% } %>
+  <% if (typeof article !== 'undefined' && article && article.cover_image) { %>
+    <meta property="og:image" content="<%= article.cover_image %>">
+  <% } %>
+  <meta property="og:type" content="<%= typeof article !== 'undefined' && article ? 'article' : 'website' %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/styles.css">
+  <% if (adsenseEnabled && adsenseClientId) { %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseClientId %>" crossorigin="anonymous"></script>
+  <% } %>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">RainX<span class="logo-accent">Life</span></a>
+      <nav class="main-nav">
+        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Home</a>
+        <a href="/category/personal-development">Books</a>
+        <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">About</a>
+      </nav>
+      <form class="header-search" action="/search" method="GET" role="search">
+        <input type="search" name="q" placeholder="Search books, authors, ideas..." value="<%= typeof query !== 'undefined' ? query : '' %>" aria-label="Search">
+        <button type="submit" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+    </div>
+  </header>
+  <main>

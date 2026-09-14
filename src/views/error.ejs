@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+
+<section class="container error-page">
+  <h1>Something went wrong</h1>
+  <p>Sorry about that — please try again in a moment.</p>
+  <% if (typeof message !== 'undefined' && message) { %>
+    <p class="empty-state"><%= message %></p>
+  <% } %>
+  <a href="/" class="btn-primary">Back to Home</a>
+</section>
+
+<%- include('partials/footer') %>

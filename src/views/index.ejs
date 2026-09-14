@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<section class="hero">
+  <div class="container">
+    <h1>Ideas from books. <br>Lessons for life.</h1>
+    <p class="hero-sub">Discover practical lessons, powerful ideas and memorable stories from books that can change the way you think and live.</p>
+  </div>
+</section>
+
+<% if (featured) { %>
+<section class="container featured-section">
+  <h2 class="section-label">Featured Summary</h2>
+  <a href="/books/<%= featured.slug %>" class="featured-card">
+    <div class="featured-cover">
+      <% if (featured.cover_image) { %>
+        <img src="<%= featured.cover_image %>" alt="<%= featured.book_title %> cover" loading="lazy">
+      <% } else { %>
+        <div class="cover-placeholder large"><span><%= featured.book_title %></span></div>
+      <% } %>
+    </div>
+    <div class="featured-body">
+      <% if (featured.category_name) { %><span class="tag"><%= featured.category_name %></span><% } %>
+      <h3><%= featured.title %></h3>
+      <p class="article-card-author">by <%= featured.author %></p>
+      <p><%= featured.excerpt %></p>
+      <div class="article-card-meta">
+        <span><%= featured.reading_time %> min read</span>
+      </div>
+    </div>
+  </a>
+</section>
+<% } %>
+
+<section class="container">
+  <h2 class="section-label">Latest Summaries</h2>
+  <% if (latest.length === 0) { %>
+    <p class="empty-state">New summaries are on the way — check back soon.</p>
+  <% } else { %>
+    <div class="article-grid">
+      <% latest.forEach(item => { %>
+        <%- include('partials/article-card', { item }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<% if (popular.length > 0) { %>
+<section class="container">
+  <h2 class="section-label">Popular Summaries</h2>
+  <div class="article-grid">
+    <% popular.forEach(item => { %>
+      <%- include('partials/article-card', { item }) %>
+    <% }) %>
+  </div>
+</section>
+<% } %>
+
+<section class="container category-browse">
+  <h2 class="section-label">Browse by Category</h2>
+  <div class="category-grid">
+    <% categories.forEach(cat => { %>
+      <a href="/category/<%= cat.slug %>" class="category-pill"><%= cat.name %></a>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,172 @@
+<%- include('partials/admin-header') %>
+
+<%
+  const isEdit = article && article.id;
+  const actionUrl = isEdit ? `/admin/articles/${article.id}/edit` : '/admin/articles/new';
+  const a = article || {};
+%>
+
+<div class="admin-page-head">
+  <h1><%= isEdit ? 'Edit Article' : 'New Article' %></h1>
+</div>
+
+<% if (error) { %><p class="form-error"><%= error %></p><% } %>
+
+<form action="<%= actionUrl %>" method="POST" enctype="multipart/form-data" class="admin-form">
+
+  <fieldset>
+    <legend>Basics</legend>
+
+    <label>Article Title
+      <input type="text" name="title" value="<%= a.title || '' %>" required>
+    </label>
+
+    <div class="form-row">
+      <label>Book Title
+        <input type="text" name="book_title" value="<%= a.book_title || '' %>" required>
+      </label>
+      <label>Author
+        <input type="text" name="author" value="<%= a.author || '' %>" required>
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Category
+        <select name="category_id">
+          <option value="">— None —</option>
+          <% categories.forEach(c => { %>
+            <option value="<%= c.id %>" <%= (a.category_id == c.id) ? 'selected' : '' %>><%= c.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>URL Slug
+        <input type="text" name="slug" value="<%= a.slug || '' %>" placeholder="auto-generated from title if left blank">
+      </label>
+    </div>
+
+    <label>Short Description / Excerpt
+      <textarea name="excerpt" rows="2"><%= a.excerpt || '' %></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Cover Image</legend>
+    <label>Upload a cover image
+      <input type="file" name="cover_image_file" accept="image/*">
+    </label>
+    <label>…or paste an image URL instead
+      <input type="text" name="cover_image_url" value="<%= (a.cover_image || '').startsWith('/uploads') ? '' : (a.cover_image || '') %>" placeholder="https://...">
+    </label>
+    <% if (a.cover_image && a.cover_image.startsWith('/uploads')) { %>
+      <p class="empty-state">Current image: <img src="<%= a.cover_image %>" alt="" style="height:60px;vertical-align:middle;border-radius:4px;"></p>
+    <% } %>
+  </fieldset>
+
+  <fieldset>
+    <legend>Article Content</legend>
+
+    <label>Introduction
+      <textarea name="introduction" rows="4"><%= a.introduction || '' %></textarea>
+    </label>
+
+    <label>What This Book Is About / The Story Behind the Idea
+      <textarea name="content" rows="8"><%= a.content || '' %></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset id="lessons-fieldset">
+    <legend>Key Lessons</legend>
+    <div id="lessons-container">
+      <% (lessons.length ? lessons : [{}]).forEach((lesson, i) => { %>
+        <div class="lesson-row">
+          <p class="lesson-row-label">Lesson <%= i + 1 %></p>
+          <label>Lesson Title
+            <input type="text" name="lesson_title" value="<%= lesson.title || '' %>">
+          </label>
+          <label>Why It Matters
+            <textarea name="lesson_explanation" rows="2"><%= lesson.explanation || '' %></textarea>
+          </label>
+          <label>A Simple Example
+            <textarea name="lesson_example" rows="2"><%= lesson.example || '' %></textarea>
+          </label>
+          <label>How You Can Apply It
+            <textarea name="lesson_application" rows="2"><%= lesson.application || '' %></textarea>
+          </label>
+        </div>
+      <% }) %>
+    </div>
+    <button type="button" id="add-lesson-btn" class="btn-secondary">+ Add Another Lesson</button>
+  </fieldset>
+
+  <fieldset>
+    <legend>Wrap-up</legend>
+    <label>My Takeaway
+      <textarea name="takeaway" rows="3"><%= a.takeaway || '' %></textarea>
+    </label>
+    <label>Who Should Read This Book?
+      <textarea name="who_should_read" rows="2"><%= a.who_should_read || '' %></textarea>
+    </label>
+    <label>Affiliate / Book Link (optional)
+      <input type="text" name="affiliate_url" value="<%= a.affiliate_url || '' %>" placeholder="https://...">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>SEO</legend>
+    <label>SEO Title
+      <input type="text" name="seo_title" value="<%= a.seo_title || '' %>">
+    </label>
+    <label>SEO Description
+      <textarea name="seo_description" rows="2"><%= a.seo_description || '' %></textarea>
+    </label>
+    <label>Tags (comma-separated)
+      <input type="text" name="tags" value="<%= a.tags || '' %>" placeholder="habits, productivity, money mindset">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Publishing</legend>
+    <div class="form-row">
+      <label>Publication Date
+        <input type="date" name="publication_date" value="<%= a.publication_date ? new Date(a.publication_date).toISOString().slice(0,10) : new Date().toISOString().slice(0,10) %>">
+      </label>
+      <label>Status
+        <select name="status">
+          <option value="draft" <%= (!a.published) ? 'selected' : '' %>>Draft</option>
+          <option value="published" <%= a.published ? 'selected' : '' %>>Published</option>
+        </select>
+      </label>
+    </div>
+    <label class="checkbox-label">
+      <input type="checkbox" name="featured" value="1" <%= a.featured ? 'checked' : '' %>>
+      Feature this article on the homepage
+    </label>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-primary"><%= isEdit ? 'Save Changes' : 'Create Article' %></button>
+    <a href="/admin/articles" class="btn-secondary">Cancel</a>
+  </div>
+</form>
+
+<template id="lesson-row-template">
+  <div class="lesson-row">
+    <p class="lesson-row-label">New Lesson</p>
+    <label>Lesson Title
+      <input type="text" name="lesson_title" value="">
+    </label>
+    <label>Why It Matters
+      <textarea name="lesson_explanation" rows="2"></textarea>
+    </label>
+    <label>A Simple Example
+      <textarea name="lesson_example" rows="2"></textarea>
+    </label>
+    <label>How You Can Apply It
+      <textarea name="lesson_application" rows="2"></textarea>
+    </label>
+  </div>
+</template>
+
+<script src="/js/admin.js"></script>
+
+<%- include('partials/admin-footer') %>

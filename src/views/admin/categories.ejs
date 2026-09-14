@@ -1,0 +1,40 @@
+<%- include('partials/admin-header') %>
+
+<div class="admin-page-head">
+  <h1>Categories</h1>
+</div>
+
+<% categories.forEach(c => { %>
+  <form id="edit-cat-<%= c.id %>" action="/admin/categories/<%= c.id %>/edit" method="POST"></form>
+  <form id="delete-cat-<%= c.id %>" action="/admin/categories/<%= c.id %>/delete" method="POST"></form>
+<% }) %>
+
+<table class="admin-table">
+  <thead><tr><th>Name</th><th>Slug</th><th>Description</th><th></th></tr></thead>
+  <tbody>
+    <% categories.forEach(c => { %>
+      <tr>
+        <td><input type="text" name="name" form="edit-cat-<%= c.id %>" value="<%= c.name %>" required></td>
+        <td class="empty-state">/<%= c.slug %></td>
+        <td><input type="text" name="description" form="edit-cat-<%= c.id %>" value="<%= c.description || '' %>"></td>
+        <td class="admin-table-actions">
+          <button type="submit" form="edit-cat-<%= c.id %>" class="link-button">Save</button>
+          <button type="submit" form="delete-cat-<%= c.id %>" class="link-button danger" onclick="return confirm('Delete this category? Articles keep their data but lose the category link.');">Delete</button>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<h2 class="section-label">Add Category</h2>
+<form action="/admin/categories/new" method="POST" class="admin-form inline-add-form">
+  <label>Name
+    <input type="text" name="name" required placeholder="e.g. Relationships">
+  </label>
+  <label>Description (optional)
+    <input type="text" name="description" placeholder="Shown at the top of the category page">
+  </label>
+  <button type="submit" class="btn-primary">Add Category</button>
+</form>
+
+<%- include('partials/admin-footer') %>

@@ -1,0 +1,96 @@
+<%- include('partials/header') %>
+
+<article class="container article-page">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a> &rsaquo;
+    <% if (article.category_name) { %><a href="/category/<%= article.category_slug %>"><%= article.category_name %></a> &rsaquo;<% } %>
+    <span><%= article.title %></span>
+  </nav>
+
+  <header class="article-header">
+    <% if (article.category_name) { %><span class="tag"><%= article.category_name %></span><% } %>
+    <h1><%= article.title %></h1>
+    <p class="article-byline">
+      <strong><%= article.book_title %></strong> by <%= article.author %>
+      &nbsp;&middot;&nbsp; <%= article.reading_time %> min read
+      &nbsp;&middot;&nbsp; <%= new Date(article.publication_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+    </p>
+  </header>
+
+  <% if (article.cover_image) { %>
+    <div class="article-cover">
+      <img src="<%= article.cover_image %>" alt="<%= article.book_title %> cover">
+    </div>
+  <% } %>
+
+  <div class="article-body">
+    <% if (article.introduction) { %>
+      <h2>Introduction</h2>
+      <p><%- article.introduction %></p>
+    <% } %>
+
+    <% if (article.content) { %>
+      <h2>What This Book Is About</h2>
+      <p><%- article.content %></p>
+    <% } %>
+
+    <div class="ad-slot ad-slot-inline" aria-hidden="true">
+      <!-- AdSense in-article unit placeholder: configure ADSENSE_CLIENT_ID in .env to enable -->
+    </div>
+
+    <% if (lessons.length > 0) { %>
+      <h2>Key Lessons</h2>
+      <% lessons.forEach((lesson, i) => { %>
+        <div class="lesson-block">
+          <h3><%= i + 1 %>. <%= lesson.title %></h3>
+          <p><%= lesson.explanation %></p>
+          <% if (lesson.example) { %><p><strong>Example:</strong> <%= lesson.example %></p><% } %>
+          <% if (lesson.application) { %><p><strong>How to apply it:</strong> <%= lesson.application %></p><% } %>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <% if (article.takeaway) { %>
+      <h2>My Takeaway</h2>
+      <p><%- article.takeaway %></p>
+    <% } %>
+
+    <% if (article.who_should_read) { %>
+      <h2>Who Should Read This Book?</h2>
+      <p><%= article.who_should_read %></p>
+    <% } %>
+
+    <p class="originality-note">This article is an original interpretation and educational summary of the ideas discussed in <em><%= article.book_title %></em> by <%= article.author %>. It is not a reproduction of the book.</p>
+
+    <% if (article.affiliate_url) { %>
+      <div class="cta-box">
+        <p>Want to read the full book?</p>
+        <a href="<%= article.affiliate_url %>" target="_blank" rel="noopener sponsored" class="btn-primary">Get the book</a>
+      </div>
+    <% } %>
+
+    <div class="ad-slot ad-slot-after" aria-hidden="true">
+      <!-- AdSense after-article unit placeholder -->
+    </div>
+  </div>
+
+  <p class="social-cta">Follow RainXLife on <a href="<%= tiktokUrl %>" target="_blank" rel="noopener">TikTok</a> — watch the video version of this summary.</p>
+
+  <% if (related.length > 0) { %>
+    <section class="related-section">
+      <h2 class="section-label">Related Summaries</h2>
+      <div class="article-grid">
+        <% related.forEach(item => { %>
+          <%- include('partials/article-card', { item }) %>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <nav class="prev-next">
+    <% if (prev) { %><a href="/books/<%= prev.slug %>">&larr; <%= prev.title %></a><% } else { %><span></span><% } %>
+    <% if (next) { %><a href="/books/<%= next.slug %>"><%= next.title %> &rarr;</a><% } %>
+  </nav>
+</article>
+
+<%- include('partials/footer') %>

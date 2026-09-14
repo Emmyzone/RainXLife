@@ -1,0 +1,20 @@
+<%- include('partials/header') %>
+
+<section class="container page-heading">
+  <h1><%= category.name %></h1>
+  <% if (category.description) { %><p class="hero-sub"><%= category.description %></p><% } %>
+</section>
+
+<section class="container">
+  <% if (articles.length === 0) { %>
+    <p class="empty-state">No summaries in this category yet — check back soon.</p>
+  <% } else { %>
+    <div class="article-grid">
+      <% articles.forEach(item => { %>
+        <%- include('partials/article-card', { item }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>
