@@ -1,3 +1,4 @@
+  {
   "name": "rainxlife",
   "version": "1.0.0",
   "description": "RainXLife - Ideas from books. Lessons for life. A book-summary and personal-growth publication.",
@@ -22,5 +23,4 @@
     "multer": "^1.4.5-lts.1",
     "sanitize-html": "^2.13.0"
   }
-}
-
+  }
