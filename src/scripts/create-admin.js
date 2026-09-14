@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db/db');
 
 const email = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
-const password = process.env.ADMIN_PASSWORD || '';
+const password = (process.env.ADMIN_PASSWORD || '').trim();
 
 if (!email || !password) {
   console.error('ERROR: Set ADMIN_EMAIL and ADMIN_PASSWORD in your .env (or Render environment) before running this script.');
