@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
 const path = require('path');
 const fs = require('fs');
 
@@ -27,11 +26,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
 // ---------- Sessions (stored in SQLite so logins survive restarts) ----------
-const sessionsDir = path.join(__dirname, 'data');
-if (!fs.existsSync(sessionsDir)) fs.mkdirSync(sessionsDir, { recursive: true });
-
 app.use(session({
-  store: new SQLiteStore({ db: 'sessions.db', dir: sessionsDir }),
   secret: process.env.SESSION_SECRET || 'dev_only_secret_change_me',
   resave: false,
   saveUninitialized: false,
