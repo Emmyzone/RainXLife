@@ -8,6 +8,7 @@ const estimateReadingTime = require('../utils/readingTime');
 const upload = require('../middleware/upload');
 const { requireAdmin, redirectIfLoggedIn } = require('../middleware/auth');
 const asyncHandler = require('../utils/asyncHandler');
+const { uploadImageBuffer } = require('../utils/cloudinary');
 const sanitizeHtml = require('sanitize-html');
 
 const SITE_NAME = process.env.SITE_NAME || 'RainXLife';
@@ -96,7 +97,9 @@ router.post('/articles/new', upload.single('cover_image_file'), asyncHandler(asy
     const slug = slugify(body.slug || body.title);
 
     const lessons = parseLessonsFromForm(body);
-    const coverImage = req.file ? `/uploads/${req.file.filename}` : (body.cover_image_url || '');
+    const coverImage = req.file
+      ? await uploadImageBuffer(req.file.buffer)
+      : (body.cover_image_url || '');
 
     const readingTime = estimateReadingTime(
       body.introduction,
@@ -169,7 +172,7 @@ router.post('/articles/:id/edit', upload.single('cover_image_file'), asyncHandle
     const slug = slugify(body.slug || body.title);
     const lessons = parseLessonsFromForm(body);
     const coverImage = req.file
-      ? `/uploads/${req.file.filename}`
+      ? await uploadImageBuffer(req.file.buffer)
       : (body.cover_image_url || existing.cover_image);
 
     const readingTime = estimateReadingTime(
