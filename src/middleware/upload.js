@@ -1,24 +1,9 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
-const uploadDir = path.join(process.cwd(), 'src', 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const safeBase = path
-      .basename(file.originalname, ext)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .slice(0, 40);
-    cb(null, `${Date.now()}-${safeBase}${ext}`);
-  }
-});
+// Keep the uploaded file in memory only — it gets sent straight to Cloudinary
+// and is never written to Render's local disk, so it isn't lost on restart.
+const storage = multer.memoryStorage();
 
 const allowedTypes = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 
