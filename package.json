@@ -1,4 +1,4 @@
-  {
+{
   "name": "rainxlife",
   "version": "1.0.0",
   "description": "RainXLife - Ideas from books. Lessons for life. A book-summary and personal-growth publication.",
@@ -13,9 +13,8 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "bcryptjs": "^2.4.3",
-    "better-sqlite3": "^11.3.0",
-    "connect-sqlite3": "^0.9.15",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
@@ -23,4 +22,4 @@
     "multer": "^1.4.5-lts.1",
     "sanitize-html": "2.11.0"
   }
-  }
+}
