@@ -72,3 +72,20 @@ async function initDb() {
     const defaults = [
       ['Personal Development', 'personal-development'],
       ['Money & Wealth', 'money-and-wealth'],
+      ['Psychology', 'psychology'],
+      ['Business', 'business'],
+      ['Productivity', 'productivity'],
+      ['Life', 'life']
+    ];
+    for (const [name, slug] of defaults) {
+      await client.execute({
+        sql: 'INSERT INTO categories (name, slug) VALUES (?, ?)',
+        args: [name, slug]
+      });
+    }
+  }
+
+  initialized = true;
+}
+
+module.exports = { client, initDb };
