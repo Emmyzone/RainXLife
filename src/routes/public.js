@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const q = require('../db/queries');
+const asyncHandler = require('../utils/asyncHandler');
 
 const SITE_URL = process.env.SITE_URL || 'http://localhost:3000';
 const SITE_NAME = process.env.SITE_NAME || 'RainXLife';
@@ -15,11 +16,11 @@ function safeParseLessons(json) {
 }
 
 // ---------- Homepage ----------
-router.get('/', (req, res) => {
-  const featured = q.getFeaturedArticle();
-  const latest = q.getPublishedArticles({ limit: 9 });
-  const popular = q.getPopularArticles(6);
-  const categories = q.getAllCategories();
+router.get('/', asyncHandler(async (req, res) => {
+  const featured = await q.getFeaturedArticle();
+  const latest = await q.getPublishedArticles({ limit: 9 });
+  const popular = await q.getPopularArticles(6);
+  const categories = await q.getAllCategories();
 
   res.render('index', {
     pageTitle: `${SITE_NAME} — Ideas from books. Lessons for life.`,
@@ -30,15 +31,15 @@ router.get('/', (req, res) => {
     popular,
     categories
   });
-});
+}));
 
 // ---------- Category listing ----------
-router.get('/category/:slug', (req, res) => {
-  const category = q.getCategoryBySlug(req.params.slug);
+router.get('/category/:slug', asyncHandler(async (req, res) => {
+  const category = await q.getCategoryBySlug(req.params.slug);
   if (!category) return res.status(404).render('404', { pageTitle: 'Category not found' });
 
-  const articles = q.getArticlesByCategory(category.id);
-  const categories = q.getAllCategories();
+  const articles = await q.getArticlesByCategory(category.id);
+  const categories = await q.getAllCategories();
 
   res.render('category', {
     pageTitle: `${category.name} — ${SITE_NAME}`,
@@ -48,13 +49,13 @@ router.get('/category/:slug', (req, res) => {
     articles,
     categories
   });
-});
+}));
 
 // ---------- Search ----------
-router.get('/search', (req, res) => {
+router.get('/search', asyncHandler(async (req, res) => {
   const query = (req.query.q || '').trim();
-  const results = query ? q.searchArticles(query) : [];
-  const categories = q.getAllCategories();
+  const results = query ? await q.searchArticles(query) : [];
+  const categories = await q.getAllCategories();
 
   res.render('search', {
     pageTitle: `Search — ${SITE_NAME}`,
@@ -64,18 +65,18 @@ router.get('/search', (req, res) => {
     results,
     categories
   });
-});
+}));
 
 // ---------- Static pages ----------
-const staticPage = (view, title) => (req, res) => {
-  const categories = q.getAllCategories();
+const staticPage = (view, title) => asyncHandler(async (req, res) => {
+  const categories = await q.getAllCategories();
   res.render(view, {
     pageTitle: `${title} — ${SITE_NAME}`,
     metaDescription: `${title} for ${SITE_NAME}.`,
     canonicalUrl: `${SITE_URL}/${view}`,
     categories
   });
-};
+});
 
 router.get('/about', staticPage('about', 'About'));
 router.get('/contact', staticPage('contact', 'Contact'));
@@ -85,19 +86,19 @@ router.get('/disclaimer', staticPage('disclaimer', 'Disclaimer'));
 router.get('/affiliate-disclosure', staticPage('affiliate-disclosure', 'Affiliate Disclosure'));
 
 // ---------- Article page (must be last so it doesn't swallow other routes) ----------
-router.get('/books/:slug', (req, res) => {
-  const article = q.getArticleBySlug(req.params.slug);
+router.get('/books/:slug', asyncHandler(async (req, res) => {
+  const article = await q.getArticleBySlug(req.params.slug);
   if (!article || !article.published) {
     return res.status(404).render('404', { pageTitle: 'Article not found' });
   }
 
-  q.incrementViews(article.id);
+  await q.incrementViews(article.id);
   article.views += 1;
 
   const lessons = safeParseLessons(article.lessons);
-  const related = q.getRelatedArticles(article.category_id, article.id, 4);
-  const { prev, next } = q.getPrevNextArticles(article.publication_date, article.id);
-  const categories = q.getAllCategories();
+  const related = await q.getRelatedArticles(article.category_id, article.id, 4);
+  const { prev, next } = await q.getPrevNextArticles(article.publication_date, article.id);
+  const categories = await q.getAllCategories();
 
   res.render('article', {
     pageTitle: article.seo_title || `${article.title} — ${SITE_NAME}`,
@@ -110,12 +111,12 @@ router.get('/books/:slug', (req, res) => {
     next,
     categories
   });
-});
+}));
 
 // ---------- sitemap.xml ----------
-router.get('/sitemap.xml', (req, res) => {
-  const articles = q.getPublishedArticles({ limit: 1000 });
-  const categories = q.getAllCategories();
+router.get('/sitemap.xml', asyncHandler(async (req, res) => {
+  const articles = await q.getPublishedArticles({ limit: 1000 });
+  const categories = await q.getAllCategories();
 
   const staticUrls = ['', 'about', 'contact', 'privacy-policy', 'terms', 'disclaimer', 'affiliate-disclosure'];
 
@@ -132,7 +133,7 @@ router.get('/sitemap.xml', (req, res) => {
   xml += '</urlset>';
 
   res.type('application/xml').send(xml);
-});
+}));
 
 // ---------- robots.txt ----------
 router.get('/robots.txt', (req, res) => {
