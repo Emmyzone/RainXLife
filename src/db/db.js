@@ -1,21 +1,15 @@
-const path = require('path');
-const fs = require('fs');
-const Database = require('better-sqlite3');
+const { createClient } = require('@libsql/client');
 
-const DATABASE_PATH = process.env.DATABASE_PATH || './data/rainxlife.db';
-const resolvedPath = path.resolve(process.cwd(), DATABASE_PATH);
-
-// Make sure the folder that will hold the SQLite file exists
-const dir = path.dirname(resolvedPath);
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
+if (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN) {
+  console.error('ERROR: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set (see .env.example).');
 }
 
-const db = new Database(resolvedPath);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN
+});
 
-db.exec(`
+const SCHEMA = `
 CREATE TABLE IF NOT EXISTS categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
@@ -62,24 +56,19 @@ CREATE TABLE IF NOT EXISTS admins (
 CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published);
 CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category_id);
 CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
-`);
+`;
 
-// Seed default categories if the table is empty
-const categoryCount = db.prepare('SELECT COUNT(*) AS c FROM categories').get().c;
-if (categoryCount === 0) {
-  const insert = db.prepare('INSERT INTO categories (name, slug) VALUES (?, ?)');
-  const defaults = [
-    ['Personal Development', 'personal-development'],
-    ['Money & Wealth', 'money-and-wealth'],
-    ['Psychology', 'psychology'],
-    ['Business', 'business'],
-    ['Productivity', 'productivity'],
-    ['Life', 'life']
-  ];
-  const insertMany = db.transaction((rows) => {
-    for (const row of rows) insert.run(row[0], row[1]);
-  });
-  insertMany(defaults);
-}
+let initialized = false;
 
-module.exports = db;
+async function initDb() {
+  if (initialized) return;
+
+  await client.executeMultiple(SCHEMA);
+
+  const countResult = await client.execute('SELECT COUNT(*) AS c FROM categories');
+  const categoryCount = Number(countResult.rows[0].c);
+
+  if (categoryCount === 0) {
+    const defaults = [
+      ['Personal Development', 'personal-development'],
+      ['Money & Wealth', 'money-and-wealth'],
