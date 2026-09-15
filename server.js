@@ -2,15 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const fs = require('fs');
 
-require('./src/db/db'); // ensures DB + tables exist before routes load
+const { initDb } = require('./src/db/db');
 
 const publicRoutes = require('./src/routes/public');
 const adminRoutes = require('./src/routes/admin');
 
 const app = express();
 app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 const SITE_NAME = process.env.SITE_NAME || 'RainXLife';
 const SITE_URL = process.env.SITE_URL || `http://localhost:${PORT}`;
@@ -26,7 +26,7 @@ app.use(express.json());
 // ---------- Static assets ----------
 app.use(express.static(path.join(__dirname, 'src', 'public')));
 
-// ---------- Sessions (stored in SQLite so logins survive restarts) ----------
+// ---------- Sessions (kept in memory — fine for a single free-tier instance) ----------
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev_only_secret_change_me',
   resave: false,
@@ -69,6 +69,14 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`${SITE_NAME} running at http://localhost:${PORT}`);
+async function start() {
+  await initDb();
+  app.listen(PORT, () => {
+    console.log(`${SITE_NAME} running at http://localhost:${PORT}`);
+  });
+}
+
+start().catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
