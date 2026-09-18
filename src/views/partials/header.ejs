@@ -32,7 +32,7 @@
       <a href="/" class="logo">RainX<span class="logo-accent">Life</span></a>
       <nav class="main-nav">
         <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">Home</a>
-        <a href="/category/personal-development">Books</a>
+        <a href="/books" class="<%= currentPath === '/books' ? 'active' : '' %>">Books</a>
         <a href="/about" class="<%= currentPath === '/about' ? 'active' : '' %>">About</a>
       </nav>
       <form class="header-search" action="/search" method="GET" role="search">
