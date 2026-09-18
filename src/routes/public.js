@@ -66,6 +66,19 @@ router.get('/search', asyncHandler(async (req, res) => {
     categories
   });
 }));
+// ---------- All books ----------// ---------- All books ----------
+router.get('/books', asyncHandler(async (req, res) => {
+  const articles = await q.getPublishedArticles({ limit: 100 });
+  const categories = await q.getAllCategories();
+
+  res.render('books', {
+    pageTitle: `Books — ${SITE_NAME}`,
+    metaDescription: 'Browse every book summary on RainXLife by category.',
+    canonicalUrl: `${SITE_URL}/books`,
+    articles,
+    categories
+  });
+}));
 
 // ---------- Static pages ----------
 const staticPage = (view, title) => asyncHandler(async (req, res) => {
