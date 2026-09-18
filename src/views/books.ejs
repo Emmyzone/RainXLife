@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<section class="container page-heading">
+  <h1>Books</h1>
+  <p class="hero-sub">Every summary on RainXLife, organized by category.</p>
+</section>
+
+<section class="container category-browse">
+  <div class="category-grid">
+    <% categories.forEach(cat => { %>
+      <a href="/category/<%= cat.slug %>" class="category-pill"><%= cat.name %></a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="container">
+  <% if (articles.length === 0) { %>
+    <p class="empty-state">New summaries are on the way — check back soon.</p>
+  <% } else { %>
+    <div class="article-grid">
+      <% articles.forEach(item => { %>
+        <%- include('partials/article-card', { item }) %>
+      <% }) %>
+    </div>
+  <% } %>
+</section>
+
+<%- include('partials/footer') %>
